@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Controle de Estoque · Casa de Oração Amor em Cristo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#25201a;
+    --ink-soft:#5c5346;
+    --paper:#f4eee0;
+    --surface:#fffdf6;
+    --surface-2:#faf4e6;
+    --line:#e3d8bd;
+    --teal:#2b5d5e;
+    --teal-dark:#1c4344;
+    --brick:#b04b34;
+    --brick-soft:#f3ded6;
+    --amber:#c98a2b;
+    --amber-soft:#f4e6c8;
+    --sage:#4c7a52;
+    --sage-soft:#dfe9df;
+    --plum:#6b4c6e;
+    --gold:#c9932e;
+    --shadow: 0 1px 0 rgba(37,32,26,0.04), 0 8px 20px -12px rgba(37,32,26,0.25);
+    --radius: 14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 500px at 85% -10%, rgba(201,147,46,0.10), transparent 60%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding-bottom:64px;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px;}
+  ::selection{background:var(--amber-soft);}
+
+  /* ---------- Header ---------- */
+  header.top{
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg, var(--surface) 0%, var(--paper) 100%);
+    padding:28px 0 22px;
+  }
+  .top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:14px;}
+  .brand-mark{
+    width:46px;height:46px;border-radius:11px;flex:none;
+    background:var(--teal);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow);
+  }
+  .brand-mark svg{width:24px;height:24px;}
+  .brand h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:22px;
+    margin:0 0 2px;
+    letter-spacing:-0.01em;
+  }
+  .brand p{margin:0;color:var(--ink-soft);font-size:13.5px;}
+  .sync-note{
+    font-size:12.5px;color:var(--ink-soft);
+    display:flex;align-items:center;gap:6px;
+    padding-top:6px;
+  }
+  .dot{width:6px;height:6px;border-radius:50%;background:var(--sage);flex:none;}
+
+  /* ---------- Hero stats ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+    margin:28px 0 8px;
+    box-shadow:var(--shadow);
+  }
+  .stat{background:var(--surface);padding:20px 18px;}
+  .stat .num{
+    font-family:'Fraunces',serif;
+    font-size:34px;
+    font-weight:600;
+    line-height:1;
+    letter-spacing:-0.01em;
+  }
+  .stat .num.warn{color:var(--brick);}
+  .stat .label{margin-top:8px;font-size:12.5px;color:var(--ink-soft);}
+
+  @media (max-width:720px){
+    .stats{grid-template-columns:repeat(2,1fr);}
+  }
+
+  /* ---------- Section titles ---------- */
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:34px 0 14px;flex-wrap:wrap;}
+  .section-head h2{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:19px;
+    margin:0;
+  }
+  .section-head .hint{font-size:12.5px;color:var(--ink-soft);}
+
+  /* ---------- Category bars ---------- */
+  .cat-list{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:6px 18px;
+  }
+  .cat-row{
+    display:grid;
+    grid-template-columns:120px 1fr 46px;
+    align-items:center;
+    gap:14px;
+    padding:13px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .cat-row:last-child{border-bottom:none;}
+  .cat-name{font-size:13.5px;font-weight:600;}
+  .cat-track{background:var(--surface-2);border-radius:6px;height:9px;overflow:hidden;}
+  .cat-fill{height:100%;border-radius:6px;}
+  .cat-count{font-size:13px;color:var(--ink-soft);text-align:right;font-variant-numeric:tabular-nums;}
+
+  /* ---------- Controls ---------- */
+  .controls{
+    display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    margin-bottom:18px;
+  }
+  .search{
+    position:relative;flex:1 1 220px;
+  }
+  .search input{
+    width:100%;
+    padding:10px 12px 10px 34px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--surface);
+    font-family:inherit;font-size:13.5px;color:var(--ink);
+    outline:none;
+  }
+  .search input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(43,93,94,0.12);}
+  .search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--ink-soft);}
+
+  .chip-group{display:flex;gap:6px;flex-wrap:wrap;}
+  .chip{
+    border:1px solid var(--line);
+    background:var(--surface);
+    color:var(--ink-soft);
+    font-size:12.5px;font-weight:600;
+    padding:7px 12px;border-radius:999px;
+    cursor:pointer;user-select:none;
+    transition:background .12s, color .12s, border-color .12s;
+    font-family:inherit;
+  }
+  .chip:hover{border-color:var(--teal);}
+  .chip.active{background:var(--teal);border-color:var(--teal);color:#fff;}
+
+  .btn-primary{
+    background:var(--teal);color:#fff;border:none;
+    padding:10px 16px;border-radius:10px;
+    font-family:inherit;font-size:13.5px;font-weight:600;
+    cursor:pointer;display:flex;align-items:center;gap:7px;
+    white-space:nowrap;
+    transition:background .12s;
+  }
+  .btn-primary:hover{background:var(--teal-dark);}
+  .btn-primary svg{width:15px;height:15px;}
+
+  /* ---------- Grid of items ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(240px,1fr));
+    gap:12px;
+  }
+  .card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:16px 16px 14px;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .card-top{display:flex;align-items:center;justify-content:space-between;}
+  .tag{
+    font-size:11.5px;font-weight:700;letter-spacing:.02em;
+    padding:3px 9px;border-radius:6px;color:#fff;
+    font-family:'Inter',sans-serif;
+  }
+  .cat-label{font-size:13px;color:var(--ink-soft);font-weight:600;}
+  .card-count{font-family:'Fraunces',serif;font-size:36px;font-weight:600;line-height:1;}
+  .card-count-label{font-size:12px;color:var(--ink-soft);margin-top:-6px;}
+  .status-badge{
+    align-self:flex-start;
+    font-size:11.5px;font-weight:700;
+    padding:4px 10px;border-radius:999px;
+  }
+  .card-actions{display:flex;align-items:center;gap:6px;margin-top:4px;}
+  .qty-input{
+    width:44px;text-align:center;
+    border:1px solid var(--line);border-radius:8px;
+    padding:6px 4px;font-family:inherit;font-size:13px;
+    -moz-appearance:textfield;
+  }
+  .qty-input::-webkit-outer-spin-button,.qty-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .icon-btn{
+    border:1px solid var(--line);background:var(--surface-2);
+    width:32px;height:32px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;flex:none;color:var(--ink);
+    transition:background .12s, border-color .12s;
+  }
+  .icon-btn svg{width:15px;height:15px;}
+  .icon-btn.in:hover{background:var(--sage-soft);border-color:var(--sage);color:var(--sage);}
+  .icon-btn.out:hover{background:var(--brick-soft);border-color:var(--brick);color:var(--brick);}
+  .card-footer{display:flex;justify-content:flex-end;gap:6px;margin-top:2px;}
+  .ghost-btn{
+    background:transparent;border:none;color:var(--ink-soft);
+    font-size:12px;cursor:pointer;display:flex;align-items:center;gap:4px;
+    padding:4px 6px;border-radius:6px;font-family:inherit;
+  }
+  .ghost-btn:hover{color:var(--ink);background:var(--surface-2);}
+  .ghost-btn svg{width:13px;height:13px;}
+
+  .empty{
+    text-align:center;padding:60px 20px;color:var(--ink-soft);
+    background:var(--surface);border:1px dashed var(--line);border-radius:var(--radius);
+  }
+  .empty svg{width:34px;height:34px;margin-bottom:10px;color:var(--line);}
+
+  /* ---------- Modal ---------- */
+  .overlay{
+    position:fixed;inset:0;background:rgba(37,32,26,0.42);
+    display:none;align-items:center;justify-content:center;
+    padding:20px;z-index:50;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:var(--surface);border-radius:16px;
+    width:100%;max-width:380px;padding:24px;
+    box-shadow:0 20px 50px -10px rgba(0,0,0,0.35);
+  }
+  .modal h3{font-family:'Fraunces',serif;font-size:19px;margin:0 0 4px;font-weight:600;}
+  .modal .sub{font-size:12.5px;color:var(--ink-soft);margin:0 0 18px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;font-weight:600;color:var(--ink-soft);margin-bottom:6px;}
+  .field input, .field select{
+    width:100%;padding:10px 11px;border-radius:9px;
+    border:1px solid var(--line);font-family:inherit;font-size:13.5px;
+    background:var(--surface);color:var(--ink);outline:none;
+  }
+  .field input:focus, .field select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(43,93,94,0.12);}
+  .modal-actions{display:flex;gap:8px;margin-top:18px;}
+  .btn-secondary{
+    flex:1;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);
+    padding:10px;border-radius:10px;font-family:inherit;font-weight:600;font-size:13.5px;cursor:pointer;
+  }
+  .btn-secondary:hover{background:var(--paper);}
+  .modal-actions .btn-primary{flex:1;justify-content:center;}
+  .danger-link{
+    margin-top:14px;text-align:center;
+  }
+  .danger-link button{
+    background:none;border:none;color:var(--brick);font-size:12px;cursor:pointer;font-family:inherit;
+    text-decoration:underline;
+  }
+
+  /* Toast */
+  #toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;
+    font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;
+    z-index:60;box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  }
+  #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  footer.page-footer{
+    text-align:center;margin-top:44px;
+    font-size:12px;color:var(--ink-soft);
+  }
+  footer.page-footer button{
+    background:none;border:none;color:var(--ink-soft);text-decoration:underline;
+    cursor:pointer;font-family:inherit;font-size:12px;
+  }
+
+  .loading-screen{
+    min-height:60vh;display:flex;align-items:center;justify-content:center;
+    color:var(--ink-soft);font-size:13.5px;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-row">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M6 7h12M8 7l-3 3 3 3M16 7l3 3-3 3"/></svg>
+      </div>
+      <div>
+        <h1>Casa de Oração Amor em Cristo</h1>
+        <p>Controle de estoque do bazar / doações de roupas</p>
+      </div>
+    </div>
+    <div class="sync-note" id="syncNote"><span class="dot"></span> dados salvos automaticamente</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div id="loadingScreen" class="loading-screen">Carregando estoque…</div>
+
+  <div id="app" style="display:none;">
+
+    <div class="stats">
+      <div class="stat">
+        <div class="num" id="statTotal">0</div>
+        <div class="label">Peças em estoque</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="statEntradas">0</div>
+        <div class="label">Entradas registradas</div>
+      </div>
+      <div class="stat">
+        <div class="num" id="statSaidas">0</div>
+        <div class="label">Saídas registradas</div>
+      </div>
+      <div class="stat">
+        <div class="num warn" id="statBaixo">0</div>
+        <div class="label">Itens com estoque baixo</div>
+      </div>
+    </div>
+
+    <div class="section-head">
+      <h2>Peças por categoria</h2>
+      <span class="hint">Somando todos os tamanhos</span>
+    </div>
+    <div class="cat-list" id="catList"></div>
+
+    <div class="section-head">
+      <h2>Itens no estoque</h2>
+      <span class="hint" id="itemCount"></span>
+    </div>
+
+    <div class="controls">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="Buscar por categoria…">
+      </div>
+      <div class="chip-group" id="sizeChips"></div>
+      <div class="chip-group" id="statusChips"></div>
+      <button class="btn-primary" id="addItemBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Adicionar item
+      </button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+    <div class="empty" id="emptyState" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      <div>Nenhum item encontrado com esses filtros.</div>
+    </div>
+
+    <footer class="page-footer">
+      Feito para a Casa de Oração Amor em Cristo · <button id="resetBtn">restaurar dados originais da planilha</button>
+    </footer>
+
+  </div>
+</div>
+
+<!-- Modal: Adicionar / Editar item -->
+<div class="overlay" id="itemOverlay">
+  <div class="modal">
+    <h3 id="itemModalTitle">Adicionar item</h3>
+    <p class="sub" id="itemModalSub">Cadastre uma nova categoria e tamanho no estoque.</p>
+    <div class="field">
+      <label for="fCategoria">Categoria</label>
+      <input list="categoriaList" id="fCategoria" placeholder="Ex: Camisetas">
+      <datalist id="categoriaList"></datalist>
+    </div>
+    <div class="field">
+      <label for="fTamanho">Tamanho</label>
+      <select id="fTamanho">
+        <option value="PP">PP</option>
+        <option value="P">P</option>
+        <option value="M">M</option>
+        <option value="G">G</option>
+        <option value="GG">GG</option>
+        <option value="Único">Tamanho único</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="fEstoque">Quantidade em estoque</label>
+      <input type="number" min="0" id="fEstoque" placeholder="0">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="itemCancelBtn">Cancelar</button>
+      <button class="btn-primary" id="itemSaveBtn" style="justify-content:center;">Salvar</button>
+    </div>
+    <div class="danger-link" id="deleteWrap" style="display:none;">
+      <button id="itemDeleteBtn">Excluir este item</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const STORAGE_KEY = "estoque:items";
+  const SHARED = true; // estoque é compartilhado entre quem usar o painel
+
+  const SEED_ITEMS = [
+    {categoria:"Camisetas", tamanho:"PP", estoque:34},
+    {categoria:"Calças",    tamanho:"PP", estoque:59},
+    {categoria:"Jaquetas",  tamanho:"PP", estoque:7},
+    {categoria:"Vestidos",  tamanho:"PP", estoque:5},
+    {categoria:"Infantil",  tamanho:"PP", estoque:31},
+
+    {categoria:"Camisetas", tamanho:"P", estoque:10},
+    {categoria:"Calças",    tamanho:"P", estoque:27},
+    {categoria:"Jaquetas",  tamanho:"P", estoque:50},
+    {categoria:"Vestidos",  tamanho:"P", estoque:79},
+    {categoria:"Infantil",  tamanho:"P", estoque:24},
+
+    {categoria:"Camisetas", tamanho:"M", estoque:48},
+    {categoria:"Calças",    tamanho:"M", estoque:18},
+    {categoria:"Jaquetas",  tamanho:"M", estoque:88},
+    {categoria:"Vestidos",  tamanho:"M", estoque:53},
+    {categoria:"Infantil",  tamanho:"M", estoque:13},
+
+    {categoria:"Camisetas", tamanho:"G", estoque:74},
+    {categoria:"Calças",    tamanho:"G", estoque:37},
+    {categoria:"Jaquetas",  tamanho:"G", estoque:109},
+    {categoria:"Vestidos",  tamanho:"G", estoque:0},
+    {categoria:"Infantil",  tamanho:"G", estoque:10},
+
+    {categoria:"Camisetas", tamanho:"GG", estoque:15},
+    {categoria:"Calças",    tamanho:"GG", estoque:12},
+    {categoria:"Jaquetas",  tamanho:"GG", estoque:10},
+    {categoria:"Vestidos",  tamanho:"GG", estoque:50},
+    {categoria:"Infantil",  tamanho:"GG", estoque:90},
+  ];
+
+  const CATEGORY_COLORS = {
+    "Camisetas": "#2b5d5e",
+    "Calças":    "#b04b34",
+    "Jaquetas":  "#4c7a52",
+    "Vestidos":  "#c9932e",
+    "Infantil":  "#6b4c6e",
+  };
+  const FALLBACK_COLORS = ["#2b5d5e","#b04b34","#4c7a52","#c9932e","#6b4c6e","#5c5346"];
+  function colorFor(categoria){
+    if(CATEGORY_COLORS[categoria]) return CATEGORY_COLORS[categoria];
+    let sum=0; for(let i=0;i<categoria.length;i++) sum+=categoria.charCodeAt(i);
+    return FALLBACK_COLORS[sum % FALLBACK_COLORS.length];
+  }
+
+  function seedWithIds(){
+    return SEED_ITEMS.map((it,i)=>({
+      id: "seed-" + i,
+      categoria: it.categoria,
+      tamanho: it.tamanho,
+      estoque: it.estoque,
+      entradas: 0,
+      saidas: 0,
+    }));
+  }
+
+  function statusOf(estoque){
+    if(estoque < 15) return "Baixo";
+    if(estoque < 50) return "Médio";
+    return "Alto";
+  }
+  const STATUS_STYLE = {
+    "Baixo": {bg:"#f3ded6", fg:"#b04b34"},
+    "Médio": {bg:"#f4e6c8", fg:"#c98a2b"},
+    "Alto":  {bg:"#dfe9df", fg:"#4c7a52"},
+  };
+
+  const SIZE_ORDER = ["PP","P","M","G","GG"];
+
+  let items = [];
+  let filters = { search:"", tamanho:"Todos", status:"Todos" };
+  let editingId = null;
+
+  const el = (id) => document.getElementById(id);
+
+  function fmt(n){ return new Intl.NumberFormat("pt-BR").format(n); }
+
+  function showToast(msg){
+    const t = el("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(()=>t.classList.remove("show"), 2200);
+  }
+
+  async function loadItems(){
+    try{
+      const res = await window.storage.get(STORAGE_KEY, SHARED);
+      if(res && res.value){
+        items = JSON.parse(res.value);
+        return;
+      }
+    }catch(e){
+      // chave ainda não existe — segue para semear
+    }
+    items = seedWithIds();
+    await persist();
+  }
+
+  async function persist(){
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(items), SHARED);
+    }catch(e){
+      console.error("Erro ao salvar estoque:", e);
+      showToast("Não foi possível salvar. Tente novamente.");
+    }
+  }
+
+  function uniqueCategorias(){
+    return Array.from(new Set(items.map(i=>i.categoria))).sort();
+  }
+
+  // ---------- Renderização ----------
+
+  function renderStats(){
+    const totalEstoque = items.reduce((s,i)=>s+i.estoque,0);
+    const totalEntradas = items.reduce((s,i)=>s+i.entradas,0);
+    const totalSaidas = items.reduce((s,i)=>s+i.saidas,0);
+    const baixoCount = items.filter(i=>statusOf(i.estoque)==="Baixo").length;
+    el("statTotal").textContent = fmt(totalEstoque);
+    el("statEntradas").textContent = fmt(totalEntradas);
+    el("statSaidas").textContent = fmt(totalSaidas);
+    el("statBaixo").textContent = fmt(baixoCount);
+  }
+
+  function renderCategoryBars(){
+    const byCat = {};
+    items.forEach(i=>{ byCat[i.categoria] = (byCat[i.categoria]||0) + i.estoque; });
+    const rows = Object.entries(byCat).sort((a,b)=>b[1]-a[1]);
+    const max = Math.max(1, ...rows.map(r=>r[1]));
+    el("catList").innerHTML = rows.map(([cat,count])=>`
+      <div class="cat-row">
+        <div class="cat-name">${escapeHtml(cat)}</div>
+        <div class="cat-track"><div class="cat-fill" style="width:${Math.max(4,(count/max)*100)}%;background:${colorFor(cat)};"></div></div>
+        <div class="cat-count">${fmt(count)}</div>
+      </div>
+    `).join("") || `<div style="padding:16px 0;color:var(--ink-soft);font-size:13px;">Nenhum item cadastrado ainda.</div>`;
+  }
+
+  function renderChips(){
+    const sizes = ["Todos", ...SIZE_ORDER, ...Array.from(new Set(items.map(i=>i.tamanho))).filter(t=>!SIZE_ORDER.includes(t))];
+    const uniqueSizes = Array.from(new Set(sizes));
+    el("sizeChips").innerHTML = uniqueSizes.map(s=>
+      `<button class="chip ${filters.tamanho===s?"active":""}" data-size="${escapeAttr(s)}">${escapeHtml(s)}</button>`
+    ).join("");
+
+    const statuses = ["Todos","Baixo","Médio","Alto"];
+    el("statusChips").innerHTML = statuses.map(s=>
+      `<button class="chip ${filters.status===s?"active":""}" data-status="${escapeAttr(s)}">${escapeHtml(s)}</button>`
+    ).join("");
+
+    el("sizeChips").querySelectorAll(".chip").forEach(btn=>{
+      btn.addEventListener("click", ()=>{ filters.tamanho = btn.dataset.size; renderGrid(); renderChips(); });
+    });
+    el("statusChips").querySelectorAll(".chip").forEach(btn=>{
+      btn.addEventListener("click", ()=>{ filters.status = btn.dataset.status; renderGrid(); renderChips(); });
+    });
+  }
+
+  function filteredItems(){
+    return items.filter(i=>{
+      if(filters.search && !i.categoria.toLowerCase().includes(filters.search.toLowerCase())) return false;
+      if(filters.tamanho !== "Todos" && i.tamanho !== filters.tamanho) return false;
+      if(filters.status !== "Todos" && statusOf(i.estoque) !== filters.status) return false;
+      return true;
+    }).sort((a,b)=> a.categoria.localeCompare(b.categoria) || SIZE_ORDER.indexOf(a.tamanho)-SIZE_ORDER.indexOf(b.tamanho));
+  }
+
+  function renderGrid(){
+    const list = filteredItems();
+    el("itemCount").textContent = `${list.length} de ${items.length} itens`;
+    const grid = el("grid");
+    const empty = el("emptyState");
+
+    if(list.length === 0){
+      grid.style.display = "none";
+      empty.style.display = "block";
+      return;
+    }
+    grid.style.display = "grid";
+    empty.style.display = "none";
+
+    grid.innerHTML = list.map(item=>{
+      const status = statusOf(item.estoque);
+      const st = STATUS_STYLE[status];
+      const c = colorFor(item.categoria);
+      return `
+      <div class="card" data-id="${item.id}">
+        <div class="card-top">
+          <span class="tag" style="background:${c};">${escapeHtml(item.tamanho)}</span>
+          <span class="cat-label">${escapeHtml(item.categoria)}</span>
+        </div>
+        <div>
+          <div class="card-count">${fmt(item.estoque)}</div>
+          <div class="card-count-label">peças em estoque</div>
+        </div>
+        <span class="status-badge" style="background:${st.bg};color:${st.fg};">${status}</span>
+        <div class="card-actions">
+          <button class="icon-btn out" title="Registrar saída" data-action="out" data-id="${item.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg>
+          </button>
+          <input type="number" min="1" value="1" class="qty-input" data-qty="${item.id}">
+          <button class="icon-btn in" title="Registrar entrada" data-action="in" data-id="${item.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </button>
+        </div>
+        <div class="card-footer">
+          <button class="ghost-btn" data-action="edit" data-id="${item.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            Editar
+          </button>
+        </div>
+      </div>`;
+    }).join("");
+
+    grid.querySelectorAll('[data-action="in"], [data-action="out"]').forEach(btn=>{
+      btn.addEventListener("click", onMove);
+    });
+    grid.querySelectorAll('[data-action="edit"]').forEach(btn=>{
+      btn.addEventListener("click", ()=>openEditModal(btn.dataset.id));
+    });
+  }
+
+  async function onMove(e){
+    const btn = e.currentTarget;
+    const id = btn.dataset.id;
+    const action = btn.dataset.action;
+    const qtyInput = document.querySelector(`[data-qty="${id}"]`);
+    const qty = Math.max(1, parseInt(qtyInput.value,10) || 1);
+    const item = items.find(i=>i.id===id);
+    if(!item) return;
+
+    if(action === "in"){
+      item.estoque += qty;
+      item.entradas += qty;
+      showToast(`+${qty} em ${item.categoria} (${item.tamanho})`);
+    } else {
+      if(qty > item.estoque){
+        showToast("Quantidade maior que o estoque atual.");
+        return;
+      }
+      item.estoque -= qty;
+      item.saidas += qty;
+      showToast(`-${qty} em ${item.categoria} (${item.tamanho})`);
+    }
+    await persist();
+    renderAll();
+  }
+
+  // ---------- Modal: adicionar / editar ----------
+
+  function openAddModal(){
+    editingId = null;
+    el("itemModalTitle").textContent = "Adicionar item";
+    el("itemModalSub").textContent = "Cadastre uma nova categoria e tamanho no estoque.";
+    el("fCategoria").value = "";
+    el("fTamanho").value = "PP";
+    el("fEstoque").value = "";
+    el("deleteWrap").style.display = "none";
+    populateCategoriaList();
+    el("itemOverlay").classList.add("show");
+    setTimeout(()=>el("fCategoria").focus(), 50);
+  }
+
+  function openEditModal(id){
+    const item = items.find(i=>i.id===id);
+    if(!item) return;
+    editingId = id;
+    el("itemModalTitle").textContent = "Editar item";
+    el("itemModalSub").textContent = "Ajuste a contagem manualmente, se precisar corrigir.";
+    el("fCategoria").value = item.categoria;
+    el("fTamanho").value = SIZE_ORDER.includes(item.tamanho) ? item.tamanho : "Único";
+    el("fEstoque").value = item.estoque;
+    el("deleteWrap").style.display = "block";
+    populateCategoriaList();
+    el("itemOverlay").classList.add("show");
+  }
+
+  function closeModal(){
+    el("itemOverlay").classList.remove("show");
+    editingId = null;
+  }
+
+  function populateCategoriaList(){
+    el("categoriaList").innerHTML = uniqueCategorias().map(c=>`<option value="${escapeAttr(c)}">`).join("");
+  }
+
+  async function saveModal(){
+    const categoria = el("fCategoria").value.trim();
+    const tamanho = el("fTamanho").value;
+    const estoque = Math.max(0, parseInt(el("fEstoque").value,10) || 0);
+
+    if(!categoria){
+      showToast("Informe a categoria.");
+      return;
+    }
+
+    if(editingId){
+      const item = items.find(i=>i.id===editingId);
+      item.categoria = categoria;
+      item.tamanho = tamanho;
+      item.estoque = estoque;
+      showToast("Item atualizado.");
+    } else {
+      const exists = items.some(i=>i.categoria.toLowerCase()===categoria.toLowerCase() && i.tamanho===tamanho);
+      if(exists){
+        showToast("Já existe um item com essa categoria e tamanho.");
+        return;
+      }
+      items.push({
+        id: "item-" + Date.now() + "-" + Math.floor(Math.random()*1000),
+        categoria, tamanho, estoque, entradas:0, saidas:0
+      });
+      showToast("Item adicionado.");
+    }
+    await persist();
+    closeModal();
+    renderAll();
+  }
+
+  async function deleteItem(){
+    if(!editingId) return;
+    items = items.filter(i=>i.id !== editingId);
+    await persist();
+    showToast("Item excluído.");
+    closeModal();
+    renderAll();
+  }
+
+  async function resetToSeed(){
+    if(!confirm("Isso vai substituir todos os dados atuais pelos dados originais da planilha. Continuar?")) return;
+    items = seedWithIds();
+    await persist();
+    showToast("Dados restaurados.");
+    renderAll();
+  }
+
+  // ---------- Util ----------
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, c=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+  }
+  function escapeAttr(s){ return escapeHtml(s); }
+
+  function renderAll(){
+    renderStats();
+    renderCategoryBars();
+    renderGrid();
+  }
+
+  // ---------- Eventos globais ----------
+  function bindEvents(){
+    el("searchInput").addEventListener("input", (e)=>{
+      filters.search = e.target.value;
+      renderGrid();
+    });
+    el("addItemBtn").addEventListener("click", openAddModal);
+    el("itemCancelBtn").addEventListener("click", closeModal);
+    el("itemSaveBtn").addEventListener("click", saveModal);
+    el("itemDeleteBtn").addEventListener("click", deleteItem);
+    el("itemOverlay").addEventListener("click", (e)=>{ if(e.target.id === "itemOverlay") closeModal(); });
+    el("resetBtn").addEventListener("click", resetToSeed);
+    document.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeModal(); });
+  }
+
+  async function init(){
+    await loadItems();
+    bindEvents();
+    renderChips();
+    renderAll();
+    el("loadingScreen").style.display = "none";
+    el("app").style.display = "block";
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
