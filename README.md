@@ -4,7 +4,7 @@ Sistema web para controle do estoque de roupas doadas, desenvolvido para o bazar
 
 Este projeto substitui o controle manual (caderno/planilha) por um painel simples, acessível pelo navegador, que qualquer voluntário pode usar sem treinamento técnico.
 
-🔗 Acesse o site: [cole aqui o link do GitHub Pages depois de ativado]
+🔗 Acesse o site: [cole aqui o link do GitHub Pages]
 
 Sobre o projeto
 
@@ -34,7 +34,7 @@ Basta abrir o arquivo index.html em qualquer navegador — não é necessário i
 Para rodar localmente:
 
 bash
-git clone https://github.com/SEU-USUARIO/Controle-de-Estoque.git
+git clone https://github.com/Gabriel-Augusto05/Controle-de-Estoque.git
 cd Controle-de-Estoque
 
 Depois é só abrir o index.html no navegador (duplo clique no arquivo).
@@ -42,9 +42,11 @@ Depois é só abrir o index.html no navegador (duplo clique no arquivo).
 Estrutura do repositório
 Controle-de-Estoque/
 └── index.html   # site completo (HTML + CSS + JS em um único arquivo)
-Aviso sobre salvamento de dados
+Armazenamento dos dados
 
-Este site foi originalmente criado para rodar dentro do Claude, usando um recurso de armazenamento próprio da plataforma. Ao hospedar fora do Claude (por exemplo, no GitHub Pages), o salvamento automático dos dados pode não funcionar — o site sempre carregará os dados iniciais da planilha da instituição.
+Este site foi feito para rodar no GitHub Pages, direto no navegador, sem servidor e sem instalação. Os dados do estoque ficam salvos automaticamente no próprio navegador (localStorage) do aparelho em que o site é usado.
+
+Por isso, use sempre o mesmo aparelho e o mesmo navegador, e evite a aba anônima, porque os dados ficam guardados só naquele navegador e somem se o histórico do site for apagado.
 
 Instituição parceira
 
