@@ -1,5 +1,7 @@
 Controle de Estoque — Casa de Oração Amor em Cristo
 
+Link do GitHub Pages: https://gabriel-augusto05.github.io/Controle-de-Estoque/
+
 Sistema web para controle do estoque de roupas doadas, desenvolvido para o bazar beneficente da Casa de Oração Amor em Cristo, em Taboão da Serra — SP.
 
 Este projeto substitui o controle manual (caderno/planilha) por um painel simples, acessível pelo navegador, que qualquer voluntário pode usar sem treinamento técnico.
